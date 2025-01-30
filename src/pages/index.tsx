@@ -27,7 +27,6 @@ function Home(): JSX.Element {
   const [gpuCards, isLoading, error] = useFetchGpuAvailability(
     initialGpuCards,
     selectedRegion,
-    fetchTrigger,
   );
 
   // Locale detection
