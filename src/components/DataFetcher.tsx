@@ -4,8 +4,7 @@ import { type GpuCard } from "~/components/types/gpuInterface";
 
 function useFetchGpuAvailability(
   initialGpuCards: GpuCard[],
-  selectedRegion: string,
-  fetchTrigger: number,
+  selectedRegion: string
 ): [GpuCard[], boolean, Error | null] {
   const [gpuCards, setGpuCards] = useState<GpuCard[]>(initialGpuCards);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -25,11 +24,6 @@ function useFetchGpuAvailability(
 
   useEffect(() => {
     const fetchAvailability = async () => {
-      if (fetchTrigger === 0) {
-        setGpuCards(initialGpuCards);
-        return;
-      }
-
       setIsLoading(true);
       try {
         const promises = initialGpuCards.map(async (card) => {
@@ -75,12 +69,13 @@ function useFetchGpuAvailability(
     };
 
     // ✅ Run fetchAvailability every 1 second
-    const interval = setInterval(fetchAvailability, 1000);
-    return () => clearInterval(interval);  // ✅ Cleanup interval on component unmount
-}, [initialGpuCards, selectedRegion]); // ❌ Removed fetchTrigger dependency
+    fetchAvailability(); // Run immediately on component mount
+    const interval = setInterval(() => {
+      void fetchAvailability(); // Ensures async function works inside setInterval
+    }, 1000);
 
-    void fetchAvailability();
-  }, [initialGpuCards, selectedRegion, fetchTrigger]);
+    return () => clearInterval(interval); // ✅ Cleanup interval on component unmount
+  }, [initialGpuCards, selectedRegion]); // ✅ Dependency array ensures it updates when region or cards change
 
   return [gpuCards, isLoading, error];
 }
