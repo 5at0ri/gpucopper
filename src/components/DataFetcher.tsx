@@ -28,7 +28,7 @@ function useFetchGpuAvailability(
       try {
         const promises = initialGpuCards.map(async (card) => {
           const card_url = card.api_url;
-          const completeUrl = `${card_url}&locale=${selectedRegion}`;
+          const completeUrl = `/api/proxy?url=${encodeURIComponent(card.api_url)}&locale=${selectedRegion}`;
 
           try {
             const response = await axios.get<ApiResponse>(completeUrl);
