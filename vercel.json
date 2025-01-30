@@ -1,6 +1,0 @@
-{
-  "build": {
-    "src": "src",
-    "use": "@vercel/next"
-  }
-}
